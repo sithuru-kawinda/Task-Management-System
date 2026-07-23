@@ -87,7 +87,9 @@ docker-compose up -d
 
 If you'd rather use an existing MySQL instance, just point `DB_HOST`/`DB_PORT`/`DB_USER`/`DB_PASSWORD`/`DB_NAME` in `backend/.env` at it instead.
 
-Then, from `backend/`, run the Knex migrations and seed the admin user:
+Then create the schema and seed the admin user, either way works — **pick one**, not both:
+
+**Option A — Knex (recommended; this is what the migration files in `backend/src/migrations/` track):**
 
 ```bash
 cd backend
@@ -95,9 +97,15 @@ npm run migrate   # creates the users and tasks tables
 npm run seed       # inserts the admin user from ADMIN_* env vars
 ```
 
-Migration files live in `backend/src/migrations/`; they are the source of truth for the schema. A plain SQL reference dump of the resulting schema is also included at `database/schema.sql`.
-
 To roll back the last migration batch: `npm run migrate:rollback`.
+
+**Option B — plain SQL, no Node/Knex required:**
+
+```bash
+mysql -h 127.0.0.1 -P 3307 -u root -p < database/schema.sql
+```
+
+`database/schema.sql` creates the `task_manager` database, both tables, and the seeded admin user (`admin@test.com` / `123456`) in one shot. It's a convenience for anyone who just wants a MySQL client — don't run `npm run migrate` afterward against the same database, since the tables would already exist outside Knex's migration tracking and it will fail.
 
 ## Running the Backend
 

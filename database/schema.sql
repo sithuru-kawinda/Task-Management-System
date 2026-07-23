@@ -1,7 +1,23 @@
--- Task Management System — schema dump
--- Generated from the Knex migrations in backend/src/migrations/.
--- This file is a convenience reference; the migrations are the source of truth
--- and are what `npm run migrate` (in backend/) actually applies.
+-- Task Management System — full database bootstrap
+--
+-- Standalone script: creates the database, tables, and the seeded admin
+-- user in one run. Equivalent to `npm run migrate && npm run seed` in
+-- backend/ (Knex migrations under backend/src/migrations/ remain the
+-- source of truth for schema changes going forward); this file is a
+-- convenience for anyone who just wants to run it directly with a MySQL
+-- client, no Node/Knex required.
+--
+-- Usage:
+--   mysql -u root -p < database/schema.sql
+
+CREATE DATABASE IF NOT EXISTS `task_manager`
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_0900_ai_ci;
+
+USE `task_manager`;
+
+DROP TABLE IF EXISTS `tasks`;
+DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE `users` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -31,3 +47,10 @@ CREATE TABLE `tasks` (
   KEY `tasks_title_index` (`title`),
   CONSTRAINT `tasks_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Seed admin user: admin@test.com / 123456
+-- (bcrypt hash below is that password hashed with 10 salt rounds, matching
+-- backend/src/seeds/01_admin_user.ts. Change ADMIN_* in backend/.env and
+-- re-run `npm run seed` if you want different credentials instead.)
+INSERT INTO `users` (`name`, `email`, `password`)
+VALUES ('Admin', 'admin@test.com', '$2a$10$g2rADHJtLqwd.Zc3aFDSe.sX9ACDh3iOQgbhDqF0djZnJaUoaG5LK');
