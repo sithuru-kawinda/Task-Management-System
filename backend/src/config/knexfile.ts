@@ -12,7 +12,7 @@ const config: Knex.Config = {
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
     database: process.env.DB_NAME || 'task_manager',
-    dateStrings: ['DATE'],
+    dateStrings: true,
   },
   migrations: {
     directory: path.resolve(__dirname, '../migrations'),
