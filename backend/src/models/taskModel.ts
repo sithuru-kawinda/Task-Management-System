@@ -63,7 +63,9 @@ export const taskModel = {
   },
 
   async update(id: number, userId: number, input: UpdateTaskInput): Promise<Task | undefined> {
-    await db<Task>('tasks').where({ id, user_id: userId }).update(input);
+    await db<Task>('tasks')
+      .where({ id, user_id: userId })
+      .update({ ...input, updated_at: db.fn.now() });
     return this.findById(id, userId);
   },
 

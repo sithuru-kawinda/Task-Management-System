@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import type { Task, TaskInput, TaskPriority, TaskStatus } from '../types';
 import { todayIsoDate } from '../utils/taskDisplay';
+import { getErrorMessage } from '../utils/getErrorMessage';
 
 interface TaskFormProps {
   initialTask?: Task | null;
@@ -58,10 +59,7 @@ export function TaskForm({ initialTask, onSubmit, onCancel }: TaskFormProps) {
         due_date: dueDate,
       });
     } catch (error) {
-      const message =
-        (error as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        'Something went wrong. Please try again.';
-      setSubmitError(message);
+      setSubmitError(getErrorMessage(error, 'Something went wrong. Please try again.'));
     } finally {
       setSubmitting(false);
     }

@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { getErrorMessage } from '../utils/getErrorMessage';
 
 export function LoginPage() {
   const { login, isAuthenticated } = useAuth();
@@ -31,10 +32,7 @@ export function LoginPage() {
       await login(email.trim(), password);
       navigate('/', { replace: true });
     } catch (err) {
-      const message =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message ||
-        'Unable to log in. Please check your credentials.';
-      setError(message);
+      setError(getErrorMessage(err, 'Unable to log in. Please check your credentials.'));
     } finally {
       setSubmitting(false);
     }
