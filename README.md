@@ -238,4 +238,3 @@ This submission is set up to run locally via the steps above. If a hosted URL is
 
 - Frontend URL: _not deployed_
 - Backend URL: _not deployed_
-"# Task-Management-System" 
