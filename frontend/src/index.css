@@ -1,6 +1,33 @@
 @import "tailwindcss";
 
+@theme {
+  /* Brand accent — teal-green, used as a committed accent on the login surface. */
+  --color-brand-50: oklch(97% 0.018 165);
+  --color-brand-100: oklch(93% 0.045 165);
+  --color-brand-200: oklch(87% 0.07 165);
+  --color-brand-400: oklch(70% 0.115 165);
+  --color-brand-500: oklch(58% 0.13 165);
+  --color-brand-600: oklch(50% 0.125 165);
+  --color-brand-700: oklch(42% 0.11 165);
+  --color-brand-800: oklch(34% 0.09 166);
+  --color-brand-950: oklch(21% 0.05 167);
+
+  /* Tinted neutrals — never pure black/white. */
+  --color-surface: oklch(99% 0.004 165);
+  --color-ink: oklch(21% 0.012 165);
+}
+
 body {
   margin: 0;
   font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
 }

@@ -1,42 +1,31 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react';
 import { login as loginRequest } from '../api/auth';
+import { clearAuth, readUser, saveAuth } from '../utils/tokenStorage';
 import type { AuthUser } from '../types';
 
 interface AuthContextValue {
   user: AuthUser | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, remember: boolean) => Promise<void>;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-function readStoredUser(): AuthUser | null {
-  const raw = localStorage.getItem('user');
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw) as AuthUser;
-  } catch {
-    return null;
-  }
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(readStoredUser);
+  const [user, setUser] = useState<AuthUser | null>(() => readUser<AuthUser>());
 
   const value = useMemo<AuthContextValue>(
     () => ({
       user,
       isAuthenticated: user !== null,
-      login: async (email: string, password: string) => {
+      login: async (email: string, password: string, remember: boolean) => {
         const response = await loginRequest(email, password);
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('user', JSON.stringify(response.user));
+        saveAuth(response.token, response.user, remember);
         setUser(response.user);
       },
       logout: () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        clearAuth();
         setUser(null);
       },
     }),
